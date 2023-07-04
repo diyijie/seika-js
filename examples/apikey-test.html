@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" /> 
+<script type="text/javascript" src="../zbus.min.js"></script>
+</head>
+<body>      
+
+<script type="text/javascript">  
+const rpc = new RpcClient("localhost:15555");     
+rpc.apiKey = "2ba912a8-4a8d-49d2-1a22-198fd285cb06";
+rpc.secretKey = "461277322-943d-4b2f-b9b6-3f860d746ffd";
+rpc.signFields = "url,method,body";
+rpc.authEnabled = true;
+
+rpc.db.info('table').then(res=>{
+	console.log(res); 
+});
+
+</script>
+</body> 
+</html>

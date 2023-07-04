@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" /> 
+<script type="text/javascript" src="../zbus.min.js"></script>
+</head>
+<body>      
+
+<script type="text/javascript">  
+const api = new RpcClient("zbus.io");     
+
+const mappingAllTables = async function(){
+	const tables = await rpc.admin.showTables('jhb', '%', 1, 1000);
+	tables.forEach(async ({ catalog, name }) => {
+		try {
+			const where = { real_catalog_name: catalog, real_object_name: name };
+			const exists = await rpc.db.exists('table', where);
+			if (exists) {
+				console.log(`${catalog}.${name} exists`);
+				//await rpc.admin.mappingTable(name);
+			} else {
+				console.log(`${catalog}.${name} prepare to create...`);
+				await rpc.admin.createTable('T', 'jhb', catalog, name, name);
+				console.log(`${catalog}.${name} create success`);
+			}
+		} catch (e) {
+			console.error(`Table[${name}] create failed, ${e.message}`, e);
+		}
+	});
+};
+
+mappingAllTables();
+
+
+</script>
+</body> 
+</html>

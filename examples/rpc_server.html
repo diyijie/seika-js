@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" /> 
+<script type="text/javascript" src="../zbus.min.js"></script>
+</head>
+<body>      
+
+<script type="text/javascript">  
+
+class MyService{
+	plus(a, b) {
+		return parseInt(a) + parseInt(b);
+	} 
+	echo(value) {
+		return value;
+	}  
+	testEncoding() {
+		return "中文";
+	} 
+	stringArray() {
+		return ["hong", "leiming"];
+	} 
+	getBin() {
+		return new Uint8Array(10);
+	}  
+
+	html(){
+		var res = new Message();
+		res.status= 200;
+		res.body = "hello html body"
+		return res;
+	} 
+}      
+
+function home(){
+	var res = new Message();
+	res.status= 200;
+	res.headers['content-type'] = 'text/html; charset=utf8';
+	res.body = "<h1>from JS browser page</h1>"
+	return res;
+}
+
+var p = new RpcProcessor(); 
+p.mount("/example", new MyService());
+p.mount("/", home);
+
+//RPC via MQ
+var server = new RpcServer(p);
+server.mqServerAddress = "zbus.io"; 
+server.mq = "/";  
+server.mqMask = Protocol.MASK_DELETE_ON_EXIT;
+//server.enableAuth("2ba912a8-4a8d-49d2-1a22-198fd285cb06", "461277322-943d-4b2f-b9b6-3f860d746ffd"); //apiKey + secretKey 
+server.start();
+
+</script>
+</body> 
+</html>
